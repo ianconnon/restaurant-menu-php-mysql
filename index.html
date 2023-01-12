@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="jquery.js"></script>
+</head>
+<body>
+
+    <div class="menu-container">
+        <h1 class="title-menu">
+            <span>Menu</span> RESTAURANT
+        </h1>
+
+        <div class="menus">
+            <ul class="beverages" id="beverages">
+                <h3 class="menus-title">
+                    Beverages
+                </h3>
+            </ul>
+            <div class="foods medium">
+                <ul class="border-dashed" id="foods">
+                    <h3 class="menus-title">
+                        Foods
+                    </h3>
+                    <div style="height:25px"></div>
+                    
+                </ul>
+                
+            </div>
+            <ul class="desserts" id="desserts">
+                <h3 class="menus-title">
+                    Desserts
+                </h3>
+            </ul>
+        </div>
+    </div>
+
+
+    <script>
+
+        addEventListener('keydown', e=>{
+            if(e.ctrlKey == true && e.key == "q"){
+                location.href = "admin.php";
+            }
+        })
+
+        const createMenu = e =>{
+            const menu = document.createElement("li");
+            const about = document.createElement("div")
+            const name = document.createElement("p")
+            const description = document.createElement("p")
+            const price = document.createElement("p")
+
+            menu.classList.add('menu')
+            about.classList.add('menu-desc')
+            name.classList.add('menu-name')
+            description.classList.add('menu-component')
+            price.classList.add('menu-price')
+
+            name.textContent = e.name;
+            description.textContent = e.description;
+            price.textContent = "$"+e.price;
+
+            menu.id = e.id;
+
+            menu.appendChild(about);
+            menu.appendChild(price);
+            about.appendChild(name);
+            about.appendChild(description);
+
+            return menu;
+        }
+
+        const fragment = document.createDocumentFragment();
+
+        $(document).ready(function(){
+			$.ajax({
+				url:'api/getFoods.php',
+				type:'POST',
+				data:{},
+				success:function(data){
+					for (var i = 0; i < data.data.length; i++) {
+                        let d = data.data;
+						fragment.appendChild(createMenu(d[i]));
+					}
+					document.getElementById("foods").appendChild(fragment);
+				},
+				error:function(err){
+					console.error(err);
+				}
+			});
+		});
+
+        $(document).ready(function(){
+			$.ajax({
+				url:'api/getDesserts.php',
+				type:'POST',
+				data:{},
+				success:function(data){
+					for (var i = 0; i < data.data.length; i++) {
+                        let d = data.data;
+						fragment.appendChild(createMenu(d[i]));
+					}
+					document.getElementById("desserts").appendChild(fragment);
+				},
+				error:function(err){
+					console.error(err);
+				}
+			});
+		});
+
+        $(document).ready(function(){
+			$.ajax({
+				url:'api/getBeverages.php',
+				type:'POST',
+				data:{},
+				success:function(data){
+					for (var i = 0; i < data.data.length; i++) {
+                        let d = data.data;
+						fragment.appendChild(createMenu(d[i]));
+					}
+					document.getElementById("beverages").appendChild(fragment);
+				},
+				error:function(err){
+					console.error(err);
+				}
+			});
+		});
+    </script>
+    
+</body>
+</html>
